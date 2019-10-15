@@ -330,7 +330,7 @@
         "signature": "ed94b23c825623917f4cbc86882aa74fca6d712ff2ac4b4fce59f850db768312"
       },
       "./src/index.ts": {
-        "version": "c6819beb80afd8ab9c5969af76c58f6faf7170c9a761b851eb9415763d602697",
+        "version": "c868bc1fc873b837c34cfc59de873e529fe63abef5dccf881644eac56f08eae4",
         "signature": "3ad0823bd4529fb7518882ebde177d9d88a5827e39d643c64363684b29f0483e"
       },
       "./node_modules/@types/bluebird/index.d.ts": {

@@ -15,7 +15,7 @@ module.exports = (pandora) => {
         .service(
             'public-collector',
             autoExitDecorator(5000)(PublicCollector),
-        );
+        ).process('process1');
 
     /**
      * you can also use cluster mode to start application

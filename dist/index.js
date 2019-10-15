@@ -15,6 +15,7 @@ class PublicCollector extends autonomous_1.default {
     }
     async _start() {
         await this.db.start();
+        console.log(1);
         await this.db.sql(`CREATE TABLE okex_trades(
             time    BIGINT,
             price   BIGINT,
@@ -49,7 +50,7 @@ class PublicCollector extends autonomous_1.default {
             if (err.errno !== 1)
                 throw err;
         });
-        this.okexTrades = new ws_1.default(`ws://localhost:12001/okex/btc-usd-swap/usd/trades`);
+        this.okexTrades = new ws_1.default(`ws://ipv4.beijing.zzkids.club:12001/okex/btc-usd-swap/usd/trades`);
         this.okexTrades.on('error', console.error);
         this.okexTrades.on('close', code => {
             if (code !== ACTIVE_CLOSE)
@@ -65,7 +66,7 @@ class PublicCollector extends autonomous_1.default {
                     VALUES(%d, %d, %d, '%s')
                 ;`, trade.time, trade.price, trade.amount, trade.action).catch(console.error);
         });
-        this.okexOrderbook = new ws_1.default(`ws://localhost:12001/okex/btc-usd-swap/usd/orderbook`);
+        this.okexOrderbook = new ws_1.default(`ws://ipv4.beijing.zzkids.club:12001/okex/btc-usd-swap/usd/orderbook`);
         this.okexOrderbook.on('error', console.error);
         this.okexOrderbook.on('close', code => {
             if (code !== ACTIVE_CLOSE)
@@ -80,7 +81,7 @@ class PublicCollector extends autonomous_1.default {
                 VALUES(%d, %d, %d)
             ;`, Date.now(), orderbook.bids[0].price, orderbook.asks[0].price).catch(console.error);
         });
-        this.bitmexTrades = new ws_1.default(`ws://localhost:12001/bitmex/xbtusd/usd/trades`);
+        this.bitmexTrades = new ws_1.default(`ws://ipv4.beijing.zzkids.club:12001/bitmex/xbtusd/usd/trades`);
         this.bitmexTrades.on('error', console.error);
         this.bitmexTrades.on('close', code => {
             if (code !== ACTIVE_CLOSE)
@@ -96,7 +97,7 @@ class PublicCollector extends autonomous_1.default {
                     VALUES(%d, %d, %d, '%s')
                 ;`, trade.time, trade.price, trade.amount, trade.action).catch(console.error);
         });
-        this.bitmexOrderbook = new ws_1.default(`ws://localhost:12001/bitmex/xbtusd/usd/orderbook`);
+        this.bitmexOrderbook = new ws_1.default(`ws://ipv4.beijing.zzkids.club:12001/bitmex/xbtusd/usd/orderbook`);
         this.bitmexOrderbook.on('error', console.error);
         this.bitmexOrderbook.on('close', code => {
             if (code !== ACTIVE_CLOSE)
@@ -114,13 +115,13 @@ class PublicCollector extends autonomous_1.default {
     }
     async _stop() {
         if (this.okexTrades)
-            this.okexTrades.close();
+            this.okexTrades.close(ACTIVE_CLOSE);
         if (this.okexOrderbook)
-            this.okexOrderbook.close();
+            this.okexOrderbook.close(ACTIVE_CLOSE);
         if (this.bitmexTrades)
-            this.bitmexTrades.close();
+            this.bitmexTrades.close(ACTIVE_CLOSE);
         if (this.bitmexOrderbook)
-            this.bitmexOrderbook.close();
+            this.bitmexOrderbook.close(ACTIVE_CLOSE);
         await this.db.stop();
     }
 }

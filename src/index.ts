@@ -18,6 +18,7 @@ class PublicCollector extends Autonomous {
 
     protected async _start(): Promise<void> {
         await this.db.start();
+        console.log(1);
         await this.db.sql(`CREATE TABLE okex_trades(
             time    BIGINT,
             price   BIGINT,
@@ -54,7 +55,7 @@ class PublicCollector extends Autonomous {
 
 
         this.okexTrades = new WebSocket(
-            `ws://localhost:12001/okex/btc-usd-swap/usd/trades`
+            `ws://ipv4.beijing.zzkids.club:12001/okex/btc-usd-swap/usd/trades`
         );
         this.okexTrades.on('error', console.error);
         this.okexTrades.on('close', code => {
@@ -81,7 +82,7 @@ class PublicCollector extends Autonomous {
 
 
         this.okexOrderbook = new WebSocket(
-            `ws://localhost:12001/okex/btc-usd-swap/usd/orderbook`
+            `ws://ipv4.beijing.zzkids.club:12001/okex/btc-usd-swap/usd/orderbook`
         );
         this.okexOrderbook.on('error', console.error);
         this.okexOrderbook.on('close', code => {
@@ -106,7 +107,7 @@ class PublicCollector extends Autonomous {
 
 
         this.bitmexTrades = new WebSocket(
-            `ws://localhost:12001/bitmex/xbtusd/usd/trades`
+            `ws://ipv4.beijing.zzkids.club:12001/bitmex/xbtusd/usd/trades`
         );
         this.bitmexTrades.on('error', console.error);
         this.bitmexTrades.on('close', code => {
@@ -133,7 +134,7 @@ class PublicCollector extends Autonomous {
 
 
         this.bitmexOrderbook = new WebSocket(
-            `ws://localhost:12001/bitmex/xbtusd/usd/orderbook`
+            `ws://ipv4.beijing.zzkids.club:12001/bitmex/xbtusd/usd/orderbook`
         );
         this.bitmexOrderbook.on('error', console.error);
         this.bitmexOrderbook.on('close', code => {
@@ -155,10 +156,10 @@ class PublicCollector extends Autonomous {
     }
 
     protected async _stop(): Promise<void> {
-        if (this.okexTrades) this.okexTrades.close();
-        if (this.okexOrderbook) this.okexOrderbook.close();
-        if (this.bitmexTrades) this.bitmexTrades.close();
-        if (this.bitmexOrderbook) this.bitmexOrderbook.close();
+        if (this.okexTrades) this.okexTrades.close(ACTIVE_CLOSE);
+        if (this.okexOrderbook) this.okexOrderbook.close(ACTIVE_CLOSE);
+        if (this.bitmexTrades) this.bitmexTrades.close(ACTIVE_CLOSE);
+        if (this.bitmexOrderbook) this.bitmexOrderbook.close(ACTIVE_CLOSE);
         await this.db.stop();
     }
 }
