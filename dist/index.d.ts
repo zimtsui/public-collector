@@ -1,11 +1,10 @@
 import Autonomous from 'autonomous';
 declare class PublicCollector extends Autonomous {
     private db;
-    private okexTrades;
-    private okexOrderbook;
-    private bitmexTrades;
-    private bitmexOrderbook;
+    private center;
     protected _start(): Promise<void>;
+    private connectTrades;
+    private connectOrderbook;
     protected _stop(): Promise<void>;
 }
 export default PublicCollector;

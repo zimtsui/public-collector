@@ -322,16 +322,20 @@
         "signature": "a80e21f89e4c892da1a5c2d4dfeef5c3110f0a11b9ee781ac84331debed4c0ad"
       },
       "./node_modules/async-sqlite/dist/index.d.ts": {
-        "version": "848e2010533226a03ed3591ec75787c337f8962676e917a371c4e5ada972c733",
-        "signature": "848e2010533226a03ed3591ec75787c337f8962676e917a371c4e5ada972c733"
+        "version": "9f37790b327c78551200f92d4cb89ec541cda058b0b9b92132549703c14baba0",
+        "signature": "9f37790b327c78551200f92d4cb89ec541cda058b0b9b92132549703c14baba0"
+      },
+      "./node_modules/@types/fs-extra/index.d.ts": {
+        "version": "062fd391f70e8816148e3ba09f2aa5b26db4529f3007d6bfad7776526dd828e6",
+        "signature": "062fd391f70e8816148e3ba09f2aa5b26db4529f3007d6bfad7776526dd828e6"
       },
       "./node_modules/interfaces/dist/index.d.ts": {
         "version": "ed94b23c825623917f4cbc86882aa74fca6d712ff2ac4b4fce59f850db768312",
         "signature": "ed94b23c825623917f4cbc86882aa74fca6d712ff2ac4b4fce59f850db768312"
       },
       "./src/index.ts": {
-        "version": "c868bc1fc873b837c34cfc59de873e529fe63abef5dccf881644eac56f08eae4",
-        "signature": "3ad0823bd4529fb7518882ebde177d9d88a5827e39d643c64363684b29f0483e"
+        "version": "446ccc5cdda91a68798ae6e0510f7ceb4c61054748f1306b79d9a15265419227",
+        "signature": "9c733c4a5509290b81dcf1adbd99b443afa163a7f936a8b2f729b528cec4ddf7"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
         "version": "f41a3395fece5b112c18600fece3260cac50b945abd3fe8ccd3511ff32eef3e1",
@@ -785,6 +789,12 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "./node_modules/@types/fs-extra/index.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/ts3.2/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -794,6 +804,9 @@
         "./node_modules/autonomous/dist/index.d.ts",
         "./node_modules/async-sqlite/dist/index.d.ts",
         "./node_modules/@types/node/process.d.ts",
+        "./node_modules/@types/fs-extra/index.d.ts",
+        "./node_modules/@types/node/path.d.ts",
+        "./node_modules/@types/node/events.d.ts",
         "./node_modules/interfaces/dist/index.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -1232,6 +1245,12 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "./node_modules/@types/fs-extra/index.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/ts3.2/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -1332,6 +1351,7 @@
       "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
       "./node_modules/autonomous/dist/index.d.ts",
       "./node_modules/async-sqlite/dist/index.d.ts",
+      "./node_modules/@types/fs-extra/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/sqlite3/index.d.ts",

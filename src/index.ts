@@ -2,165 +2,147 @@ import WebSocket from 'ws';
 import Autonomous from 'autonomous';
 import Database from 'async-sqlite';
 import process from 'process';
+import { readJsonSync } from 'fs-extra';
+import { join } from 'path';
+import { once } from 'events';
 import {
     Trade,
     Orderbook,
 } from 'interfaces';
 
-const ACTIVE_CLOSE = 4000;
+const ACTIVE_CLOSE = 'public-collector';
+
+const markets: string[] = readJsonSync(join(__dirname,
+    '../cfg/markets.json'));
 
 class PublicCollector extends Autonomous {
     private db = new Database(process.argv[2]);
-    private okexTrades!: WebSocket;
-    private okexOrderbook!: WebSocket;
-    private bitmexTrades!: WebSocket;
-    private bitmexOrderbook!: WebSocket;
+    private center: {
+        [market: string]: {
+            trades: WebSocket;
+            orderbook: WebSocket;
+        }
+    } = {};
 
     protected async _start(): Promise<void> {
         await this.db.start();
-        console.log(1);
-        await this.db.sql(`CREATE TABLE okex_trades(
-            time    BIGINT,
-            price   BIGINT,
-            amount  DOUBLE PRECISION,
-            action  CHAR(3)
-        );`).catch(err => {
-            if (err.errno !== 1) throw err;
-        });
-        await this.db.sql(`CREATE TABLE okex_orderbook(
-            time        BIGINT,
-            bid_price   BIGINT,
-            ask_price   BIGINT
-        );`).catch(err => {
-            if (err.errno !== 1) throw err;
-        });
-        await this.db.sql(`CREATE TABLE bitmex_trades(
-            time    BIGINT,
-            price   BIGINT,
-            amount  DOUBLE PRECISION,
-            action  CHAR(3)
-        );`).catch(err => {
-            if (err.errno !== 1) throw err;
-        });
-        await this.db.sql(`CREATE TABLE bitmex_orderbook(
-            time        BIGINT,
-            bid_price   BIGINT,
-            ask_price   BIGINT
-        );`).catch(err => {
-            if (err.errno !== 1) throw err;
-        });
 
+        for (const market of markets) {
 
+            await this.db.sql(`CREATE TABLE "${market}/trades"(
+                    local_time    BIGINT,
+                    price   BIGINT,
+                    amount  DOUBLE PRECISION,
+                    action  CHAR(3)
+                );`).catch(err => {
+                if (err.errno !== 1) throw err;
+            });
+            await this.db.sql(`CREATE TABLE "${market}/orderbook"(
+                local_time  BIGINT,
+                bid_price   BIGINT,
+                ask_price   BIGINT
+            );`).catch(err => {
+                if (err.errno !== 1) throw err;
+            });
 
+            this.center[market] = {
+                orderbook: this.connectOrderbook(market),
+                trades: this.connectTrades(market),
+            }
+        }
+    }
 
-
-        this.okexTrades = new WebSocket(
-            `ws://ipv4.beijing.zzkids.club:12001/okex/btc-usd-swap/usd/trades`
+    private connectTrades(market: string): WebSocket {
+        const centerTrades = new WebSocket(
+            `ws://localhost:12001/${market}/trades`
         );
-        this.okexTrades.on('error', console.error);
-        this.okexTrades.on('close', code => {
-            if (code !== ACTIVE_CLOSE)
-                console.error(new Error('public center closed'))
+        centerTrades.on('error', console.error);
+        centerTrades.on('close', (code, reason) => {
+            if (reason !== ACTIVE_CLOSE) console.error(new Error(
+                `public center for ${market} closed: ${code}`));
         });
-        this.okexTrades.on('message', (message: string) => {
-            const data = JSON.parse(message);
-            const trades = <Trade[]>data;
-            for (const trade of trades)
-                this.db.sql(`
-                    INSERT INTO okex_trades
-                    (time, price, amount, action)
-                    VALUES(%d, %d, %d, '%s')
-                ;`, trade.time,
-                    trade.price,
-                    trade.amount,
-                    trade.action,
-                ).catch(console.error);
+        centerTrades.on('message', (message: string) => {
+            // console.log('trades message');
+            try {
+                const data = JSON.parse(message);
+                const trades = <Trade[]>data;
+                for (const trade of trades)
+                    this.db.sql(`
+                        INSERT INTO "${market}/trades"
+                        (local_time, price, amount, action)
+                        VALUES(%d, %d, %d, '%s')
+                    ;`, trade.time,
+                        trade.price,
+                        trade.amount,
+                        trade.action,
+                    ).catch(err => {
+                        console.error(err);
+                        this.stop();
+                    });
+            } catch (err) {
+                console.error(err);
+                this.stop();
+            }
+
         });
+        return centerTrades;
+    }
 
-
-
-
-
-        this.okexOrderbook = new WebSocket(
-            `ws://ipv4.beijing.zzkids.club:12001/okex/btc-usd-swap/usd/orderbook`
+    private connectOrderbook(market: string): WebSocket {
+        const centerOrderbook = new WebSocket(
+            `ws://localhost:12001/${market}/orderbook`
         );
-        this.okexOrderbook.on('error', console.error);
-        this.okexOrderbook.on('close', code => {
-            if (code !== ACTIVE_CLOSE)
-                console.error(new Error('public center closed'))
+        centerOrderbook.on('error', console.error);
+        centerOrderbook.on('close', (code, reason) => {
+            if (reason !== ACTIVE_CLOSE) console.error(new Error(
+                `public center for ${market} closed: ${code}`))
         });
-        this.okexOrderbook.on('message', (message: string) => {
-            const data = JSON.parse(message);
-            const orderbook = <Orderbook>data;
-            this.db.sql(`
-                INSERT INTO okex_orderbook
-                (time, bid_price, ask_price)
-                VALUES(%d, %d, %d)
-            ;`, Date.now(),
-                orderbook.bids[0].price,
-                orderbook.asks[0].price,
-            ).catch(console.error);
+        centerOrderbook.on('message', (message: string) => {
+            // console.log('trades message');
+
+            try {
+                const data = JSON.parse(message);
+                const orderbook = <Orderbook>data;
+                if (
+                    orderbook.asks.length > 0
+                    && orderbook.bids.length > 0
+                ) this.db.sql(`
+                    INSERT INTO "${market}/orderbook"
+                    (local_time, bid_price, ask_price)
+                    VALUES(%d, %d, %d)
+                ;`, Date.now(),
+                    orderbook.bids[0].price,
+                    orderbook.asks[0].price,
+                ).catch(err => {
+                    console.error(err);
+                    this.stop();
+                });
+            } catch (err) {
+                console.error(err);
+                this.stop();
+            }
         });
-
-
-
-
-
-        this.bitmexTrades = new WebSocket(
-            `ws://ipv4.beijing.zzkids.club:12001/bitmex/xbtusd/usd/trades`
-        );
-        this.bitmexTrades.on('error', console.error);
-        this.bitmexTrades.on('close', code => {
-            if (code !== ACTIVE_CLOSE)
-                console.error(new Error('public center closed'))
-        });
-        this.bitmexTrades.on('message', (message: string) => {
-            const data = JSON.parse(message);
-            const trades = <Trade[]>data;
-            for (const trade of trades)
-                this.db.sql(`
-                    INSERT INTO bitmex_trades
-                    (time, price, amount, action)
-                    VALUES(%d, %d, %d, '%s')
-                ;`, trade.time,
-                    trade.price,
-                    trade.amount,
-                    trade.action,
-                ).catch(console.error);
-        });
-
-
-
-
-
-        this.bitmexOrderbook = new WebSocket(
-            `ws://ipv4.beijing.zzkids.club:12001/bitmex/xbtusd/usd/orderbook`
-        );
-        this.bitmexOrderbook.on('error', console.error);
-        this.bitmexOrderbook.on('close', code => {
-            if (code !== ACTIVE_CLOSE)
-                console.error(new Error('public center closed'))
-        });
-        this.bitmexOrderbook.on('message', (message: string) => {
-            const data = JSON.parse(message);
-            const orderbook = <Orderbook>data;
-            this.db.sql(`
-                INSERT INTO bitmex_orderbook
-                (time, bid_price, ask_price)
-                VALUES(%d, %d, %d)
-            ;`, Date.now(),
-                orderbook.bids[0].price,
-                orderbook.asks[0].price,
-            ).catch(console.error);
-        });
+        return centerOrderbook;
     }
 
     protected async _stop(): Promise<void> {
-        if (this.okexTrades) this.okexTrades.close(ACTIVE_CLOSE);
-        if (this.okexOrderbook) this.okexOrderbook.close(ACTIVE_CLOSE);
-        if (this.bitmexTrades) this.bitmexTrades.close(ACTIVE_CLOSE);
-        if (this.bitmexOrderbook) this.bitmexOrderbook.close(ACTIVE_CLOSE);
+        // 必须先管网络再关数据库，不然数据库永远在等待写入队列空。
+        console.log(0);
+        const stopped: Promise<unknown>[] = [];
+        for (const market of markets)
+            if (this.center[market]) {
+                let center;
+                center = this.center[market].trades;
+                if (center.readyState < 2) center.close(1000, ACTIVE_CLOSE);
+                if (center.readyState < 3) stopped.push(once(center, 'close'));
+                center = this.center[market].orderbook;
+                if (center.readyState < 2) center.close(1000, ACTIVE_CLOSE);
+                if (center.readyState < 3) stopped.push(once(center, 'close'));
+            }
+        await Promise.all(stopped);
+        console.log(1);
         await this.db.stop();
+        console.log(2);
     }
 }
 

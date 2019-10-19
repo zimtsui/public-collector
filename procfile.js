@@ -2,6 +2,7 @@
 
 const { PublicCollector } = require('./');
 const { autoExitDecorator } = require('autonomous');
+const { PandoraKita } = require('pandora-kita');
 
 module.exports = (pandora) => {
 
@@ -11,11 +12,17 @@ module.exports = (pandora) => {
         .env({
             NODE_ENV: pandora.dev ? 'development' : 'production',
         });
+
+    pandora
+        .service('kita', PandoraKita)
+        .process('weak-all');
+
     pandora
         .service(
             'public-collector',
-            autoExitDecorator(5000)(PublicCollector),
-        ).process('process1');
+            autoExitDecorator(10000)(PublicCollector),
+        ).dependency(['kita'])
+        .process('process1');
 
     /**
      * you can also use cluster mode to start application

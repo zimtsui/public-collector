@@ -23,10 +23,13 @@
         "typescript": "^3.6.4"
     },
     "dependencies": {
+        "@types/fs-extra": "^8.0.1",
         "@types/ws": "^6.0.3",
         "async-sqlite": "git+https://github.com/zimtsui/async-sqlite.git",
         "autonomous": "git+https://github.com/zimtsui/autonomous.git",
+        "fs-extra": "^8.1.0",
         "interfaces": "git+https://github.com/zimtsui/interfaces.git",
+        "pandora-kita": "git+https://github.com/zimtsui/pandora-kita.git",
         "ws": "^7.1.2"
     }
 }
