@@ -314,12 +314,20 @@
         "signature": "edf9f7a505ebd55d49ef0a6ab571b131480f558498c4141b736bdbd80ce98311"
       },
       "./node_modules/autonomous/dist/auto-exit-decorator.d.ts": {
-        "version": "79e264690ff58964afee23e9c17f74160ac7e63baf7127964cd1590a6449caf8",
-        "signature": "79e264690ff58964afee23e9c17f74160ac7e63baf7127964cd1590a6449caf8"
+        "version": "de6056e8d562d31c0a36203eb37aff96770174246b101907f8c583bd217530ab",
+        "signature": "de6056e8d562d31c0a36203eb37aff96770174246b101907f8c583bd217530ab"
+      },
+      "./node_modules/autonomous/dist/autonomous.d.ts": {
+        "version": "e163f08a9934d11debcc3629aff2b0c58234dad5481438254257fb405e6a73c4",
+        "signature": "e163f08a9934d11debcc3629aff2b0c58234dad5481438254257fb405e6a73c4"
+      },
+      "./node_modules/autonomous/dist/pandora2pm2.d.ts": {
+        "version": "fa96a646f4eefc6b42dce2160bef1d53378aba357b3bf5c72350f00629af47ff",
+        "signature": "fa96a646f4eefc6b42dce2160bef1d53378aba357b3bf5c72350f00629af47ff"
       },
       "./node_modules/autonomous/dist/index.d.ts": {
-        "version": "a80e21f89e4c892da1a5c2d4dfeef5c3110f0a11b9ee781ac84331debed4c0ad",
-        "signature": "a80e21f89e4c892da1a5c2d4dfeef5c3110f0a11b9ee781ac84331debed4c0ad"
+        "version": "f0007c6764fe8a4ac5c9af849bc85e327880719a2c65e1a0911bee4e50e392c9",
+        "signature": "f0007c6764fe8a4ac5c9af849bc85e327880719a2c65e1a0911bee4e50e392c9"
       },
       "./node_modules/async-sqlite/dist/index.d.ts": {
         "version": "9f37790b327c78551200f92d4cb89ec541cda058b0b9b92132549703c14baba0",
@@ -334,12 +342,24 @@
         "signature": "ed94b23c825623917f4cbc86882aa74fca6d712ff2ac4b4fce59f850db768312"
       },
       "./src/index.ts": {
-        "version": "446ccc5cdda91a68798ae6e0510f7ceb4c61054748f1306b79d9a15265419227",
-        "signature": "9c733c4a5509290b81dcf1adbd99b443afa163a7f936a8b2f729b528cec4ddf7"
+        "version": "26c798b700bf6027d863da67de61c15c78b97d08bc1226a8d2dd8acd7f7ceddb",
+        "signature": "aa3377312f2bb3eea08cb1d425e58d799d53a8177e44f266333b1057f6a5217a"
+      },
+      "./node_modules/pandora-kita/dist/index.d.ts": {
+        "version": "9e217cd4eb4395b143968f279777544f7581886f476625cbde9ccaddc7f14e86",
+        "signature": "9e217cd4eb4395b143968f279777544f7581886f476625cbde9ccaddc7f14e86"
+      },
+      "./src/main.ts": {
+        "version": "03dce4f12c2e249be0b61c1943c136671d5a1c4dd0c201950108daf5d1de41e0",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
         "version": "f41a3395fece5b112c18600fece3260cac50b945abd3fe8ccd3511ff32eef3e1",
         "signature": "f41a3395fece5b112c18600fece3260cac50b945abd3fe8ccd3511ff32eef3e1"
+      },
+      "./node_modules/@types/chai/index.d.ts": {
+        "version": "0a534de2e8e1b76641c091f58fda5b8955f0e3b9df67ceae097d94dfe95c5f67",
+        "signature": "0a534de2e8e1b76641c091f58fda5b8955f0e3b9df67ceae097d94dfe95c5f67"
       },
       "./node_modules/@types/sqlite3/index.d.ts": {
         "version": "715f604465a803372a11a91a2f57ba17feba0abc24d2f7f5d4a50fcaa7b2995d",
@@ -780,8 +800,19 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "./node_modules/autonomous/dist/autonomous.d.ts": [
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./node_modules/autonomous/dist/pandora2pm2.d.ts": [
+        "./node_modules/autonomous/dist/autonomous.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "./node_modules/autonomous/dist/index.d.ts": [
         "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
+        "./node_modules/autonomous/dist/autonomous.d.ts",
+        "./node_modules/autonomous/dist/pandora2pm2.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -811,7 +842,22 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "./node_modules/pandora-kita/dist/index.d.ts": [
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/main.ts": [
+        "./node_modules/autonomous/dist/index.d.ts",
+        "./src/index.ts",
+        "./node_modules/pandora-kita/dist/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "./node_modules/@types/bluebird/index.d.ts": [
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./node_modules/@types/chai/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1238,6 +1284,8 @@
       ],
       "./node_modules/autonomous/dist/index.d.ts": [
         "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
+        "./node_modules/autonomous/dist/autonomous.d.ts",
+        "./node_modules/autonomous/dist/pandora2pm2.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1267,42 +1315,31 @@
         "./node_modules/@types/node/ts3.2/index.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./node_modules/autonomous/dist/autonomous.d.ts": [
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./node_modules/autonomous/dist/pandora2pm2.d.ts": [
+        "./node_modules/autonomous/dist/autonomous.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./node_modules/pandora-kita/dist/index.d.ts": [
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./node_modules/@types/chai/index.d.ts": [
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
-      "./node_modules/typescript/lib/lib.es5.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.d.ts",
-      "./node_modules/typescript/lib/lib.es2016.d.ts",
-      "./node_modules/typescript/lib/lib.es2017.d.ts",
-      "./node_modules/typescript/lib/lib.es2018.d.ts",
-      "./node_modules/typescript/lib/lib.es2019.d.ts",
-      "./node_modules/typescript/lib/lib.esnext.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.core.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.collection.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.generator.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.iterable.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.promise.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.proxy.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.reflect.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.symbol.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
-      "./node_modules/typescript/lib/lib.es2016.array.include.d.ts",
-      "./node_modules/typescript/lib/lib.es2017.object.d.ts",
-      "./node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
-      "./node_modules/typescript/lib/lib.es2017.string.d.ts",
-      "./node_modules/typescript/lib/lib.es2017.intl.d.ts",
-      "./node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
-      "./node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts",
-      "./node_modules/typescript/lib/lib.es2018.asynciterable.d.ts",
-      "./node_modules/typescript/lib/lib.es2018.intl.d.ts",
-      "./node_modules/typescript/lib/lib.es2018.promise.d.ts",
-      "./node_modules/typescript/lib/lib.es2018.regexp.d.ts",
-      "./node_modules/typescript/lib/lib.es2019.array.d.ts",
-      "./node_modules/typescript/lib/lib.es2019.object.d.ts",
-      "./node_modules/typescript/lib/lib.es2019.string.d.ts",
-      "./node_modules/typescript/lib/lib.es2019.symbol.d.ts",
-      "./node_modules/typescript/lib/lib.esnext.intl.d.ts",
-      "./node_modules/typescript/lib/lib.esnext.bigint.d.ts",
+      "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
+      "./node_modules/autonomous/dist/autonomous.d.ts",
+      "./node_modules/autonomous/dist/pandora2pm2.d.ts",
+      "./node_modules/pandora-kita/dist/index.d.ts",
+      "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/node/globals.d.ts",
       "./node_modules/@types/node/assert.d.ts",
       "./node_modules/@types/node/async_hooks.d.ts",
@@ -1348,14 +1385,47 @@
       "./node_modules/@types/node/ts3.2/globals.d.ts",
       "./node_modules/@types/node/ts3.2/index.d.ts",
       "./node_modules/@types/ws/index.d.ts",
-      "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
-      "./node_modules/autonomous/dist/index.d.ts",
       "./node_modules/async-sqlite/dist/index.d.ts",
       "./node_modules/@types/fs-extra/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/sqlite3/index.d.ts",
-      "./src/index.ts"
+      "./node_modules/typescript/lib/lib.es5.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.d.ts",
+      "./node_modules/typescript/lib/lib.es2016.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.d.ts",
+      "./node_modules/typescript/lib/lib.es2018.d.ts",
+      "./node_modules/typescript/lib/lib.es2019.d.ts",
+      "./node_modules/typescript/lib/lib.esnext.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "./node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.object.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.string.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.intl.d.ts",
+      "./node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+      "./node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts",
+      "./node_modules/typescript/lib/lib.es2018.asynciterable.d.ts",
+      "./node_modules/typescript/lib/lib.es2018.intl.d.ts",
+      "./node_modules/typescript/lib/lib.es2018.promise.d.ts",
+      "./node_modules/typescript/lib/lib.es2018.regexp.d.ts",
+      "./node_modules/typescript/lib/lib.es2019.array.d.ts",
+      "./node_modules/typescript/lib/lib.es2019.object.d.ts",
+      "./node_modules/typescript/lib/lib.es2019.string.d.ts",
+      "./node_modules/typescript/lib/lib.es2019.symbol.d.ts",
+      "./node_modules/typescript/lib/lib.esnext.intl.d.ts",
+      "./node_modules/typescript/lib/lib.esnext.bigint.d.ts",
+      "./node_modules/autonomous/dist/index.d.ts",
+      "./src/index.ts",
+      "./src/main.ts"
     ]
   },
   "version": "3.6.4"

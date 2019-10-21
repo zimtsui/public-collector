@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ws_1 = __importDefault(require("ws"));
-const autonomous_1 = __importDefault(require("autonomous"));
+const autonomous_1 = require("autonomous");
 const async_sqlite_1 = __importDefault(require("async-sqlite"));
 const process_1 = __importDefault(require("process"));
 const fs_extra_1 = require("fs-extra");
@@ -12,7 +12,7 @@ const path_1 = require("path");
 const events_1 = require("events");
 const ACTIVE_CLOSE = 'public-collector';
 const markets = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/markets.json'));
-class PublicCollector extends autonomous_1.default {
+class PublicCollector extends autonomous_1.Autonomous {
     constructor() {
         super(...arguments);
         this.db = new async_sqlite_1.default(process_1.default.argv[2]);

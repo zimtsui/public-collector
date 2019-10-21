@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import Autonomous from 'autonomous';
+import { Autonomous } from 'autonomous';
 import Database from 'async-sqlite';
 import process from 'process';
 import { readJsonSync } from 'fs-extra';

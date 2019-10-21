@@ -1,4 +1,4 @@
-import Autonomous from 'autonomous';
+import { Autonomous } from 'autonomous';
 declare class PublicCollector extends Autonomous {
     private db;
     private center;
