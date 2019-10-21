@@ -13,5 +13,6 @@ module.exports = {
             STOP_TIMEOUT: 20000,
             EXIT_TIMEOUT: 5000,
         },
+        args: './data/2019-10-21.db',
     }],
 };
