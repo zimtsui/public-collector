@@ -28,6 +28,12 @@ class PublicCollector extends Autonomous {
             orderbook: WebSocket;
         }
     } = {};
+    private latest: {
+        [markets: string]: {
+            maxBidPrice?: number,
+            minAskPrice?: number,
+        }
+    } = {};
 
     protected async _start(): Promise<void> {
         await this.db.start();
@@ -54,6 +60,8 @@ class PublicCollector extends Autonomous {
                 orderbook: this.connectOrderbook(market),
                 trades: this.connectTrades(market),
             }
+
+            this.latest[market] = {};
         }
     }
 
@@ -108,17 +116,25 @@ class PublicCollector extends Autonomous {
                 if (
                     orderbook.asks.length > 0
                     && orderbook.bids.length > 0
-                ) this.db.sql(`
-                    INSERT INTO "${market}/orderbook"
-                    (local_time, bid_price, ask_price)
-                    VALUES(%d, %d, %d)
-                ;`, Date.now(),
-                    orderbook.bids[0].price,
-                    orderbook.asks[0].price,
-                ).catch(err => {
-                    console.error(err);
-                    this.stop();
-                });
+                    && !(
+                        orderbook.bids[0].price === this.latest[market].maxBidPrice
+                        && orderbook.asks[0].price === this.latest[market].minAskPrice
+                    )
+                ) {
+                    this.latest[market].maxBidPrice = orderbook.bids[0].price;
+                    this.latest[market].minAskPrice = orderbook.asks[0].price;
+                    this.db.sql(`
+                        INSERT INTO "${market}/orderbook"
+                        (local_time, bid_price, ask_price)
+                        VALUES(%d, %d, %d)
+                    ;`, Date.now(),
+                        orderbook.bids[0].price,
+                        orderbook.asks[0].price,
+                    ).catch(err => {
+                        console.error(err);
+                        this.stop();
+                    });
+                }
             } catch (err) {
                 console.error(err);
                 this.stop();

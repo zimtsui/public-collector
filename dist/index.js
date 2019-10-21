@@ -18,6 +18,7 @@ class PublicCollector extends autonomous_1.Autonomous {
         super(...arguments);
         this.db = new async_sqlite_1.default(process_1.default.argv[2]);
         this.center = {};
+        this.latest = {};
     }
     async _start() {
         await this.db.start();
@@ -43,6 +44,7 @@ class PublicCollector extends autonomous_1.Autonomous {
                 orderbook: this.connectOrderbook(market),
                 trades: this.connectTrades(market),
             };
+            this.latest[market] = {};
         }
     }
     connectTrades(market) {
@@ -85,15 +87,20 @@ class PublicCollector extends autonomous_1.Autonomous {
                 const data = JSON.parse(message);
                 const orderbook = data;
                 if (orderbook.asks.length > 0
-                    && orderbook.bids.length > 0)
+                    && orderbook.bids.length > 0
+                    && !(orderbook.bids[0].price === this.latest[market].maxBidPrice
+                        && orderbook.asks[0].price === this.latest[market].minAskPrice)) {
+                    this.latest[market].maxBidPrice = orderbook.bids[0].price;
+                    this.latest[market].minAskPrice = orderbook.asks[0].price;
                     this.db.sql(`
-                    INSERT INTO "${market}/orderbook"
-                    (local_time, bid_price, ask_price)
-                    VALUES(%d, %d, %d)
-                ;`, Date.now(), orderbook.bids[0].price, orderbook.asks[0].price).catch(err => {
+                        INSERT INTO "${market}/orderbook"
+                        (local_time, bid_price, ask_price)
+                        VALUES(%d, %d, %d)
+                    ;`, Date.now(), orderbook.bids[0].price, orderbook.asks[0].price).catch(err => {
                         console.error(err);
                         this.stop();
                     });
+                }
             }
             catch (err) {
                 console.error(err);
