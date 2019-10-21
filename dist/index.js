@@ -103,7 +103,7 @@ class PublicCollector extends autonomous_1.Autonomous {
         return centerOrderbook;
     }
     async _stop() {
-        // 不能先关数据库再关网络，不然数据库永远在等待写入队列空。
+        // 不能先关数据库再关网络，不然数据库永远在等待写入队列数据库写入失败。
         const stopped = [];
         for (const market of markets)
             if (this.center[market]) {
@@ -119,12 +119,8 @@ class PublicCollector extends autonomous_1.Autonomous {
                 if (center.readyState < 3)
                     stopped.push(events_1.once(center, 'close'));
             }
-        stopped.push(this.db.stop());
-        for (const i in stopped)
-            stopped[i].then(() => {
-                console.log(i);
-            });
         await Promise.all(stopped);
+        await this.db.stop();
     }
 }
 exports.PublicCollector = PublicCollector;

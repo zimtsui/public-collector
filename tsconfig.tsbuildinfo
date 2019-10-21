@@ -342,7 +342,7 @@
         "signature": "ed94b23c825623917f4cbc86882aa74fca6d712ff2ac4b4fce59f850db768312"
       },
       "./src/index.ts": {
-        "version": "e387fd3f5a51762446b1c2f18ca1202ff5be64408f4edf67cc8b583a1df43fd0",
+        "version": "3b62057d78362a97a33aa5f1c173db95496fd3beca18c54d6306a4f60a46ce3d",
         "signature": "aa3377312f2bb3eea08cb1d425e58d799d53a8177e44f266333b1057f6a5217a"
       },
       "./node_modules/pandora-kita/dist/index.d.ts": {

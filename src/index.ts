@@ -128,7 +128,7 @@ class PublicCollector extends Autonomous {
     }
 
     protected async _stop(): Promise<void> {
-        // 不能先关数据库再关网络，不然数据库永远在等待写入队列空。
+        // 不能先关数据库再关网络，不然数据库永远在等待写入队列数据库写入失败。
         const stopped: Promise<unknown>[] = [];
         for (const market of markets)
             if (this.center[market]) {
@@ -140,12 +140,8 @@ class PublicCollector extends Autonomous {
                 if (center.readyState < 2) center.close(1000, ACTIVE_CLOSE);
                 if (center.readyState < 3) stopped.push(once(center, 'close'));
             }
-        stopped.push(this.db.stop());
-        for (const i in stopped)
-            stopped[i].then(() => {
-                console.log(i);
-            });
         await Promise.all(stopped);
+        await this.db.stop();
     }
 }
 
