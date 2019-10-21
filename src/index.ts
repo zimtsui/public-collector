@@ -15,6 +15,11 @@ const ACTIVE_CLOSE = 'public-collector';
 const markets: string[] = readJsonSync(join(__dirname,
     '../cfg/markets.json'));
 
+const config: {
+    PUBLIC_CENTER_BASE_URL: string;
+} = readJsonSync(join(__dirname,
+    '../cfg/config.json'));
+
 class PublicCollector extends Autonomous {
     private db = new Database(process.argv[2]);
     private center: {
@@ -54,7 +59,7 @@ class PublicCollector extends Autonomous {
 
     private connectTrades(market: string): WebSocket {
         const centerTrades = new WebSocket(
-            `ws://localhost:12001/${market}/trades`
+            `${config.PUBLIC_CENTER_BASE_URL}/${market}/trades`
         );
         centerTrades.on('error', console.error);
         centerTrades.on('close', (code, reason) => {
@@ -62,7 +67,6 @@ class PublicCollector extends Autonomous {
                 `public center for ${market} closed: ${code}`));
         });
         centerTrades.on('message', (message: string) => {
-            // console.log('trades message');
             try {
                 const data = JSON.parse(message);
                 const trades = <Trade[]>data;
@@ -90,7 +94,7 @@ class PublicCollector extends Autonomous {
 
     private connectOrderbook(market: string): WebSocket {
         const centerOrderbook = new WebSocket(
-            `ws://localhost:12001/${market}/orderbook`
+            `${config.PUBLIC_CENTER_BASE_URL}/${market}/orderbook`
         );
         centerOrderbook.on('error', console.error);
         centerOrderbook.on('close', (code, reason) => {
@@ -98,8 +102,6 @@ class PublicCollector extends Autonomous {
                 `public center for ${market} closed: ${code}`))
         });
         centerOrderbook.on('message', (message: string) => {
-            // console.log('trades message');
-
             try {
                 const data = JSON.parse(message);
                 const orderbook = <Orderbook>data;
@@ -126,8 +128,7 @@ class PublicCollector extends Autonomous {
     }
 
     protected async _stop(): Promise<void> {
-        // 必须先管网络再关数据库，不然数据库永远在等待写入队列空。
-        console.log(0);
+        // 不能先关数据库再关网络，不然数据库永远在等待写入队列空。
         const stopped: Promise<unknown>[] = [];
         for (const market of markets)
             if (this.center[market]) {
@@ -139,10 +140,12 @@ class PublicCollector extends Autonomous {
                 if (center.readyState < 2) center.close(1000, ACTIVE_CLOSE);
                 if (center.readyState < 3) stopped.push(once(center, 'close'));
             }
+        stopped.push(this.db.stop());
+        for (const i in stopped)
+            stopped[i].then(() => {
+                console.log(i);
+            });
         await Promise.all(stopped);
-        console.log(1);
-        await this.db.stop();
-        console.log(2);
     }
 }
 

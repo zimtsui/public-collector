@@ -12,6 +12,7 @@ const path_1 = require("path");
 const events_1 = require("events");
 const ACTIVE_CLOSE = 'public-collector';
 const markets = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/markets.json'));
+const config = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/config.json'));
 class PublicCollector extends autonomous_1.Autonomous {
     constructor() {
         super(...arguments);
@@ -45,14 +46,13 @@ class PublicCollector extends autonomous_1.Autonomous {
         }
     }
     connectTrades(market) {
-        const centerTrades = new ws_1.default(`ws://localhost:12001/${market}/trades`);
+        const centerTrades = new ws_1.default(`${config.PUBLIC_CENTER_BASE_URL}/${market}/trades`);
         centerTrades.on('error', console.error);
         centerTrades.on('close', (code, reason) => {
             if (reason !== ACTIVE_CLOSE)
                 console.error(new Error(`public center for ${market} closed: ${code}`));
         });
         centerTrades.on('message', (message) => {
-            // console.log('trades message');
             try {
                 const data = JSON.parse(message);
                 const trades = data;
@@ -74,14 +74,13 @@ class PublicCollector extends autonomous_1.Autonomous {
         return centerTrades;
     }
     connectOrderbook(market) {
-        const centerOrderbook = new ws_1.default(`ws://localhost:12001/${market}/orderbook`);
+        const centerOrderbook = new ws_1.default(`${config.PUBLIC_CENTER_BASE_URL}/${market}/orderbook`);
         centerOrderbook.on('error', console.error);
         centerOrderbook.on('close', (code, reason) => {
             if (reason !== ACTIVE_CLOSE)
                 console.error(new Error(`public center for ${market} closed: ${code}`));
         });
         centerOrderbook.on('message', (message) => {
-            // console.log('trades message');
             try {
                 const data = JSON.parse(message);
                 const orderbook = data;
@@ -104,8 +103,7 @@ class PublicCollector extends autonomous_1.Autonomous {
         return centerOrderbook;
     }
     async _stop() {
-        // 必须先管网络再关数据库，不然数据库永远在等待写入队列空。
-        console.log(0);
+        // 不能先关数据库再关网络，不然数据库永远在等待写入队列空。
         const stopped = [];
         for (const market of markets)
             if (this.center[market]) {
@@ -121,10 +119,12 @@ class PublicCollector extends autonomous_1.Autonomous {
                 if (center.readyState < 3)
                     stopped.push(events_1.once(center, 'close'));
             }
+        stopped.push(this.db.stop());
+        for (const i in stopped)
+            stopped[i].then(() => {
+                console.log(i);
+            });
         await Promise.all(stopped);
-        console.log(1);
-        await this.db.stop();
-        console.log(2);
     }
 }
 exports.PublicCollector = PublicCollector;
