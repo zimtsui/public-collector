@@ -342,7 +342,7 @@
         "signature": "ed94b23c825623917f4cbc86882aa74fca6d712ff2ac4b4fce59f850db768312"
       },
       "./src/index.ts": {
-        "version": "4f7cabcba6aed2bc4b0be5c94bfe2bd6b96eada7a732be2e67a498dd0e639621",
+        "version": "249806bf747e235f5b8472513f7988a6ce0419b9fc78f4a2e483268be6d4c321",
         "signature": "bbe439d12fc97ae717d180cfed8bb5de09f839a03a8ac437ca72b79ac832d8cf"
       },
       "./node_modules/pandora-kita/dist/index.d.ts": {
@@ -1421,11 +1421,11 @@
       "./node_modules/@types/fs-extra/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./node_modules/pandora-kita/dist/index.d.ts",
+      "./src/main.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/sqlite3/index.d.ts",
-      "./src/index.ts",
-      "./src/main.ts"
+      "./src/index.ts"
     ]
   },
   "version": "3.6.4"

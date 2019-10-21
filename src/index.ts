@@ -71,8 +71,11 @@ class PublicCollector extends Autonomous {
         );
         centerTrades.on('error', console.error);
         centerTrades.on('close', (code, reason) => {
-            if (reason !== ACTIVE_CLOSE) console.error(new Error(
-                `public center for ${market} closed: ${code}`));
+            if (reason !== ACTIVE_CLOSE) {
+                console.error(new Error(
+                    `public center for ${market}/trades closed: ${code}`));
+                this.stop();
+            }
         });
         centerTrades.on('message', (message: string) => {
             try {
@@ -106,8 +109,11 @@ class PublicCollector extends Autonomous {
         );
         centerOrderbook.on('error', console.error);
         centerOrderbook.on('close', (code, reason) => {
-            if (reason !== ACTIVE_CLOSE) console.error(new Error(
-                `public center for ${market} closed: ${code}`))
+            if (reason !== ACTIVE_CLOSE) {
+                console.error(new Error(
+                    `public center for ${market}/orderbook closed: ${code}`));
+                this.stop();
+            }
         });
         centerOrderbook.on('message', (message: string) => {
             try {

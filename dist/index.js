@@ -51,8 +51,10 @@ class PublicCollector extends autonomous_1.Autonomous {
         const centerTrades = new ws_1.default(`${config.PUBLIC_CENTER_BASE_URL}/${market}/trades`);
         centerTrades.on('error', console.error);
         centerTrades.on('close', (code, reason) => {
-            if (reason !== ACTIVE_CLOSE)
-                console.error(new Error(`public center for ${market} closed: ${code}`));
+            if (reason !== ACTIVE_CLOSE) {
+                console.error(new Error(`public center for ${market}/trades closed: ${code}`));
+                this.stop();
+            }
         });
         centerTrades.on('message', (message) => {
             try {
@@ -79,8 +81,10 @@ class PublicCollector extends autonomous_1.Autonomous {
         const centerOrderbook = new ws_1.default(`${config.PUBLIC_CENTER_BASE_URL}/${market}/orderbook`);
         centerOrderbook.on('error', console.error);
         centerOrderbook.on('close', (code, reason) => {
-            if (reason !== ACTIVE_CLOSE)
-                console.error(new Error(`public center for ${market} closed: ${code}`));
+            if (reason !== ACTIVE_CLOSE) {
+                console.error(new Error(`public center for ${market}/orderbook closed: ${code}`));
+                this.stop();
+            }
         });
         centerOrderbook.on('message', (message) => {
             try {
