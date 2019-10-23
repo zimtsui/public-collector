@@ -12,6 +12,7 @@ const markets = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/markets.j
     const db = new async_sqlite_1.default(process_1.default.argv[2]);
     const data = {};
     console.log('reading');
+    await db.start();
     for (const market of markets) {
         data[market] = {};
         let rows;
@@ -21,7 +22,7 @@ const markets = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/markets.j
             bidPrice: row.bid_price,
             askPrice: row.ask_price,
         }));
-        rows = await db.sql(`SELECT * FROM "${market}/trades;"`);
+        rows = await db.sql(`SELECT * FROM "${market}/trades";`);
         data[market].trades = rows.map((row) => ({
             localTime: row.local_time,
             price: row.price,

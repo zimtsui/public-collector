@@ -38,6 +38,7 @@ interface Market {
     } = {};
 
     console.log('reading');
+    await db.start();
 
     for (const market of markets) {
         data[market] = <Market>{};
@@ -50,7 +51,7 @@ interface Market {
             askPrice: row.ask_price,
         }));
 
-        rows = await db.sql(`SELECT * FROM "${market}/trades;"`);
+        rows = await db.sql(`SELECT * FROM "${market}/trades";`);
         data[market].trades = rows.map((row): Trade => ({
             localTime: row.local_time,
             price: row.price,
