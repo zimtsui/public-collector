@@ -32,7 +32,7 @@ class PublicCollector extends autonomous_1.Autonomous {
                 if (err.errno !== 1)
                     throw err;
             });
-            await this.db.sql(`CREATE TABLE "${market}/orderbook"(
+            await this.db.sql(`CREATE TABLE "${market}/orderbooks"(
                 local_time  BIGINT,
                 bid_price   BIGINT,
                 ask_price   BIGINT
@@ -97,7 +97,7 @@ class PublicCollector extends autonomous_1.Autonomous {
                     this.latest[market].maxBidPrice = orderbook.bids[0].price;
                     this.latest[market].minAskPrice = orderbook.asks[0].price;
                     this.db.sql(`
-                        INSERT INTO "${market}/orderbook"
+                        INSERT INTO "${market}/orderbooks"
                         (local_time, bid_price, ask_price)
                         VALUES(%d, %d, %d)
                     ;`, Date.now(), orderbook.bids[0].price, orderbook.asks[0].price).catch(err => {
