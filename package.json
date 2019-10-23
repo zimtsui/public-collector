@@ -8,7 +8,8 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc -b",
         "dev": "env NODE_ENV=development node -r source-map-support/register ./dist/main",
-        "start": "pm2 start ./ecosystem.config.js"
+        "start": "pm2 start ./ecosystem.config.js",
+        "json": "node -r source-map-support/register ./dist/db2json.js"
     },
     "repository": {
         "type": "git",
