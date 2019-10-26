@@ -37,8 +37,16 @@ interface Market {
     let data = <Market>{};
     let rows: any[];
 
-    rows = await db.sql(`SELECT * FROM orderbooks
-            ORDER BY local_time ASC;`);
+    rows = await db.sql(`
+        SELECT
+            markets.name AS market,
+            orderbooks.local_time,
+            orderbooks.bid_price,
+            orderbooks.ask_price
+        FROM orderbooks JOIN markets
+        ON orderbooks.market_id = markets.id
+        ORDER BY local_time ASC
+    ;`);
     data.orderbooks = rows.map((row): Orderbook => ({
         market: row.market,
         localTime: row.local_time,
@@ -46,8 +54,17 @@ interface Market {
         askPrice: row.ask_price,
     }));
 
-    rows = await db.sql(`SELECT * FROM trades
-            ORDER BY local_time ASC;`);
+    rows = await db.sql(`
+        SELECT
+            markets.name AS market,
+            trades.local_time,
+            trades.price,
+            trades.amount,
+            trades.action
+        FROM trades JOIN markets
+        ON trades.market_id = markets.id
+        ORDER BY local_time ASC
+    ;`);
     data.trades = rows.map((row): Trade => ({
         market: row.market,
         localTime: row.local_time,

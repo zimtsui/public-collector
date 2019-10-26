@@ -13,16 +13,33 @@ const path_1 = require("path");
     await db.start();
     let data = {};
     let rows;
-    rows = await db.sql(`SELECT * FROM orderbooks
-            ORDER BY local_time ASC;`);
+    rows = await db.sql(`
+        SELECT
+            markets.name AS market,
+            orderbooks.local_time,
+            orderbooks.bid_price,
+            orderbooks.ask_price
+        FROM orderbooks JOIN markets
+        ON orderbooks.market_id = markets.id
+        ORDER BY local_time ASC
+    ;`);
     data.orderbooks = rows.map((row) => ({
         market: row.market,
         localTime: row.local_time,
         bidPrice: row.bid_price,
         askPrice: row.ask_price,
     }));
-    rows = await db.sql(`SELECT * FROM trades
-            ORDER BY local_time ASC;`);
+    rows = await db.sql(`
+        SELECT
+            markets.name AS market,
+            trades.local_time,
+            trades.price,
+            trades.amount,
+            trades.action
+        FROM trades JOIN markets
+        ON trades.market_id = markets.id
+        ORDER BY local_time ASC
+    ;`);
     data.trades = rows.map((row) => ({
         market: row.market,
         localTime: row.local_time,
