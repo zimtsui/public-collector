@@ -27,7 +27,7 @@ interface Trade {
 }
 
 interface Market {
-    orderbook: Orderbook[];
+    orderbooks: Orderbook[];
     trades: Trade[];
 }
 
@@ -44,14 +44,16 @@ interface Market {
         data[market] = <Market>{};
         let rows: any[];
 
-        rows = await db.sql(`SELECT * FROM "${market}/orderbook";`);
-        data[market].orderbook = rows.map((row): Orderbook => ({
+        rows = await db.sql(`SELECT * FROM "${market}/orderbooks"
+            ORDER BY local_time ASC;`);
+        data[market].orderbooks = rows.map((row): Orderbook => ({
             localTime: row.local_time,
             bidPrice: row.bid_price,
             askPrice: row.ask_price,
         }));
 
-        rows = await db.sql(`SELECT * FROM "${market}/trades";`);
+        rows = await db.sql(`SELECT * FROM "${market}/trades"
+            ORDER BY local_time ASC;`);
         data[market].trades = rows.map((row): Trade => ({
             localTime: row.local_time,
             price: row.price,
