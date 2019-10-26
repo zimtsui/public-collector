@@ -20,6 +20,13 @@ const config: {
 } = readJsonSync(join(__dirname,
     '../cfg/config.json'));
 
+/*
+    这个程序使用标准 sql，没有使用任何 sqlite 方言。
+    移植到其他数据库只需修改 SCHEMA_TABLES。
+*/
+
+const SCHEMA_TABLES = 'sqlite_master';
+
 class PublicCollector extends Autonomous {
     private db = new Database(process.argv[2]);
     private center: {
@@ -34,27 +41,63 @@ class PublicCollector extends Autonomous {
             minAskPrice?: number,
         }
     } = {};
+    private marketId = new Map<string, number>();
 
     protected async _start(): Promise<void> {
         await this.db.start();
 
-        await this.db.sql(`CREATE TABLE trades(
-            market    VARCHAR(30),
-            local_time  BIGINT,
-            price       BIGINT,
-            amount      DOUBLE PRECISION,
-            action      CHAR(3)
-        );`).catch(err => {
-            if (err.errno !== 1) throw err;
-        });
-        await this.db.sql(`CREATE TABLE orderbooks(
-            market    VARCHAR(30),
-            local_time  BIGINT,
-            bid_price   BIGINT,
-            ask_price   BIGINT
-        );`).catch(err => {
-            if (err.errno !== 1) throw err;
-        });
+        if (!(<any[]>await this.db.sql(`
+            SELECT * FROM ${SCHEMA_TABLES}
+            WHERE type = 'table' AND name = 'markets'
+        ;`)).length) await this.db.sql(`CREATE TABLE markets(
+            id      SMALLINT    NOT NULL    UNIQUE,
+            name    VARCHAR(30) NOT NULL    UNIQUE
+        );`);
+
+        for (const market of markets) {
+            let rows = <any[]>await this.db.sql(`
+                SELECT * FROM markets
+                WHERE name = '%s'
+            ;`, market);
+            if (!rows.length) {
+                const ids = <any[]>await this.db.sql(`
+                    SELECT * FROM markets
+                ;`);
+                await this.db.sql(`
+                    INSERT INTO markets
+                    (id, name)
+                    VALUES(%d, '%s')
+                ;`, ids.length,
+                    market,
+                );
+                rows = <any[]>await this.db.sql(`
+                    SELECT * FROM markets
+                    WHERE name = '%s'
+                ;`, market);
+            }
+            this.marketId.set(market, rows[0].id);
+        }
+
+        if (!(<any[]>await this.db.sql(`
+            SELECT * FROM ${SCHEMA_TABLES}
+            WHERE type = 'table' AND name = 'trades'
+        ;`)).length) await this.db.sql(`CREATE TABLE trades(
+            market_id   SMALLINT            NOT NULL    REFERENCES markets(id),
+            local_time  BIGINT              NOT NULL,
+            price       BIGINT              NOT NULL,
+            amount      DOUBLE PRECISION    NOT NULL,
+            action      CHAR(3)             NOT NULL
+        );`);
+
+        if (!(<any[]>await this.db.sql(`
+            SELECT * FROM ${SCHEMA_TABLES}
+            WHERE type = 'table' AND name = 'orderbooks'
+        ;`)).length) await this.db.sql(`CREATE TABLE orderbooks(
+            market_id   SMALLINT    NOT NULL    REFERENCES markets(id),
+            local_time  BIGINT      NOT NULL,
+            bid_price   BIGINT      NOT NULL,
+            ask_price   BIGINT      NOT NULL
+        );`);
 
         for (const market of markets) {
             this.center[market] = {
@@ -85,9 +128,9 @@ class PublicCollector extends Autonomous {
                 for (const trade of trades)
                     this.db.sql(`
                         INSERT INTO trades
-                        (market, local_time, price, amount, action)
-                        VALUES('%s', %d, %d, %d, '%s')
-                    ;`, market,
+                        (market_id, local_time, price, amount, action)
+                        VALUES(%d, %d, %d, %d, '%s')
+                    ;`, this.marketId.get(market),
                         Date.now(),
                         trade.price,
                         trade.amount,
@@ -133,9 +176,9 @@ class PublicCollector extends Autonomous {
                     this.latest[market].minAskPrice = orderbook.asks[0].price;
                     this.db.sql(`
                         INSERT INTO orderbooks
-                        (market, local_time, bid_price, ask_price)
-                        VALUES('%s', %d, %d, %d)
-                    ;`, market,
+                        (market_id, local_time, bid_price, ask_price)
+                        VALUES(%d, %d, %d, %d)
+                    ;`, this.marketId.get(market),
                         Date.now(),
                         orderbook.bids[0].price,
                         orderbook.asks[0].price,
