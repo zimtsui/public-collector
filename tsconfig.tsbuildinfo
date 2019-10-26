@@ -346,7 +346,7 @@
         "signature": "ed94b23c825623917f4cbc86882aa74fca6d712ff2ac4b4fce59f850db768312"
       },
       "./src/index.ts": {
-        "version": "bada66c68822505d34615b2b8a6e8d1007f26a16b535354b6915eeb660c243c4",
+        "version": "8e79aa8a792903819ddacd0a5a669a8a26c4addf5ba7b18e4eea432677089680",
         "signature": "bbe439d12fc97ae717d180cfed8bb5de09f839a03a8ac437ca72b79ac832d8cf"
       },
       "./node_modules/pandora-kita/dist/index.d.ts": {
@@ -1426,19 +1426,19 @@
       "./node_modules/@types/node/ts3.2/globals.d.ts",
       "./node_modules/@types/node/ts3.2/index.d.ts",
       "./node_modules/@types/fs-extra/index.d.ts",
+      "./src/db2json.ts",
       "./node_modules/@types/ws/index.d.ts",
       "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
       "./node_modules/autonomous/dist/autonomous.d.ts",
       "./node_modules/autonomous/dist/pandora2pm2.d.ts",
       "./node_modules/autonomous/dist/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
-      "./src/index.ts",
       "./node_modules/pandora-kita/dist/index.d.ts",
       "./src/main.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/sqlite3/index.d.ts",
-      "./src/db2json.ts"
+      "./src/index.ts"
     ]
   },
   "version": "3.6.4"

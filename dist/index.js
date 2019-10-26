@@ -22,24 +22,26 @@ class PublicCollector extends autonomous_1.Autonomous {
     }
     async _start() {
         await this.db.start();
+        await this.db.sql(`CREATE TABLE trades(
+            exchange    VARCHAR(20),
+            local_time  BIGINT,
+            price       BIGINT,
+            amount      DOUBLE PRECISION,
+            action      CHAR(3)
+        );`).catch(err => {
+            if (err.errno !== 1)
+                throw err;
+        });
+        await this.db.sql(`CREATE TABLE orderbooks(
+            exchange    VARCHAR(20),
+            local_time  BIGINT,
+            bid_price   BIGINT,
+            ask_price   BIGINT
+        );`).catch(err => {
+            if (err.errno !== 1)
+                throw err;
+        });
         for (const market of markets) {
-            await this.db.sql(`CREATE TABLE "${market}/trades"(
-                    local_time    BIGINT,
-                    price   BIGINT,
-                    amount  DOUBLE PRECISION,
-                    action  CHAR(3)
-                );`).catch(err => {
-                if (err.errno !== 1)
-                    throw err;
-            });
-            await this.db.sql(`CREATE TABLE "${market}/orderbooks"(
-                local_time  BIGINT,
-                bid_price   BIGINT,
-                ask_price   BIGINT
-            );`).catch(err => {
-                if (err.errno !== 1)
-                    throw err;
-            });
             this.center[market] = {
                 orderbook: this.connectOrderbook(market),
                 trades: this.connectTrades(market),
@@ -62,10 +64,10 @@ class PublicCollector extends autonomous_1.Autonomous {
                 const trades = data;
                 for (const trade of trades)
                     this.db.sql(`
-                        INSERT INTO "${market}/trades"
-                        (local_time, price, amount, action)
-                        VALUES(%d, %d, %d, '%s')
-                    ;`, trade.time, trade.price, trade.amount, trade.action).catch(err => {
+                        INSERT INTO trades
+                        (exchange, local_time, price, amount, action)
+                        VALUES('%s', %d, %d, %d, '%s')
+                    ;`, market, Date.now(), trade.price, trade.amount, trade.action).catch(err => {
                         console.error(err);
                         this.stop();
                     });
@@ -97,10 +99,10 @@ class PublicCollector extends autonomous_1.Autonomous {
                     this.latest[market].maxBidPrice = orderbook.bids[0].price;
                     this.latest[market].minAskPrice = orderbook.asks[0].price;
                     this.db.sql(`
-                        INSERT INTO "${market}/orderbooks"
-                        (local_time, bid_price, ask_price)
-                        VALUES(%d, %d, %d)
-                    ;`, Date.now(), orderbook.bids[0].price, orderbook.asks[0].price).catch(err => {
+                        INSERT INTO orderbooks
+                        (exchange, local_time, bid_price, ask_price)
+                        VALUES('%s', %d, %d, %d)
+                    ;`, market, Date.now(), orderbook.bids[0].price, orderbook.asks[0].price).catch(err => {
                         console.error(err);
                         this.stop();
                     });
