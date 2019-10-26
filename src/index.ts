@@ -39,7 +39,7 @@ class PublicCollector extends Autonomous {
         await this.db.start();
 
         await this.db.sql(`CREATE TABLE trades(
-            exchange    VARCHAR(20),
+            market    VARCHAR(30),
             local_time  BIGINT,
             price       BIGINT,
             amount      DOUBLE PRECISION,
@@ -48,7 +48,7 @@ class PublicCollector extends Autonomous {
             if (err.errno !== 1) throw err;
         });
         await this.db.sql(`CREATE TABLE orderbooks(
-            exchange    VARCHAR(20),
+            market    VARCHAR(30),
             local_time  BIGINT,
             bid_price   BIGINT,
             ask_price   BIGINT
@@ -85,7 +85,7 @@ class PublicCollector extends Autonomous {
                 for (const trade of trades)
                     this.db.sql(`
                         INSERT INTO trades
-                        (exchange, local_time, price, amount, action)
+                        (market, local_time, price, amount, action)
                         VALUES('%s', %d, %d, %d, '%s')
                     ;`, market,
                         Date.now(),
@@ -133,7 +133,7 @@ class PublicCollector extends Autonomous {
                     this.latest[market].minAskPrice = orderbook.asks[0].price;
                     this.db.sql(`
                         INSERT INTO orderbooks
-                        (exchange, local_time, bid_price, ask_price)
+                        (market, local_time, bid_price, ask_price)
                         VALUES('%s', %d, %d, %d)
                     ;`, market,
                         Date.now(),

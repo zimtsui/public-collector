@@ -1,25 +1,22 @@
 import Database from 'async-sqlite';
 import process from 'process';
 import {
-    readJsonSync,
     writeJson,
 } from 'fs-extra';
 import {
-    join,
     basename,
     dirname,
 } from 'path';
 
-const markets: string[] = readJsonSync(join(__dirname,
-    '../cfg/markets.json'));
-
 interface Orderbook {
+    market: string;
     localTime: number;
     bidPrice: number;
     askPrice: number;
 }
 
 interface Trade {
+    market: string;
     localTime: number;
     amount: number;
     price: number;
@@ -33,34 +30,31 @@ interface Market {
 
 (async () => {
     const db = new Database(process.argv[2]);
-    const data: {
-        [markets: string]: Market;
-    } = {};
 
     console.log('reading');
     await db.start();
 
-    for (const market of markets) {
-        data[market] = <Market>{};
-        let rows: any[];
+    let data = <Market>{};
+    let rows: any[];
 
-        rows = await db.sql(`SELECT * FROM "${market}/orderbooks"
+    rows = await db.sql(`SELECT * FROM orderbooks
             ORDER BY local_time ASC;`);
-        data[market].orderbooks = rows.map((row): Orderbook => ({
-            localTime: row.local_time,
-            bidPrice: row.bid_price,
-            askPrice: row.ask_price,
-        }));
+    data.orderbooks = rows.map((row): Orderbook => ({
+        market: row.market,
+        localTime: row.local_time,
+        bidPrice: row.bid_price,
+        askPrice: row.ask_price,
+    }));
 
-        rows = await db.sql(`SELECT * FROM "${market}/trades"
+    rows = await db.sql(`SELECT * FROM trades
             ORDER BY local_time ASC;`);
-        data[market].trades = rows.map((row): Trade => ({
-            localTime: row.local_time,
-            price: row.price,
-            amount: row.amount,
-            action: row.action,
-        }));
-    }
+    data.trades = rows.map((row): Trade => ({
+        market: row.market,
+        localTime: row.local_time,
+        price: row.price,
+        amount: row.amount,
+        action: row.action,
+    }));
 
     console.log('writing');
 
