@@ -1,4 +1,6 @@
 [
     "bitmex/xbtusd/usd",
-    "huobi/btc-cq/usd"
+    "huobi/btc-cq/usd",
+    "huobi/btc/usdt",
+    "okex/btc/usdt"
 ]
