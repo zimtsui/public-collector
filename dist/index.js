@@ -14,10 +14,9 @@ const ACTIVE_CLOSE = 'public-collector';
 const markets = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/markets.json'));
 const config = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/config.json'));
 /*
-    这个程序使用标准 sql，没有使用任何 sqlite 方言。
-    移植到其他数据库只需修改 SCHEMA_TABLES。
+    这个程序除了创建表使用了 sqlite 方言之外，其他地方都使用标准 sql。
+    移植到其他数据库只需修改创建表的部分。
 */
-const SCHEMA_TABLES = 'sqlite_master';
 class PublicCollector extends autonomous_1.Autonomous {
     constructor() {
         super(...arguments);
@@ -28,11 +27,8 @@ class PublicCollector extends autonomous_1.Autonomous {
     }
     async _start() {
         await this.db.start();
-        if (!(await this.db.sql(`
-            SELECT * FROM ${SCHEMA_TABLES}
-            WHERE type = 'table' AND name = 'markets'
-        ;`)).length)
-            await this.db.sql(`CREATE TABLE markets(
+        await this.db.sql(`
+        CREATE TABLE IF NOT EXISTS markets(
             id      SMALLINT    NOT NULL    UNIQUE,
             name    VARCHAR(30) NOT NULL    UNIQUE
         );`);
@@ -57,22 +53,16 @@ class PublicCollector extends autonomous_1.Autonomous {
             }
             this.marketId.set(market, rows[0].id);
         }
-        if (!(await this.db.sql(`
-            SELECT * FROM ${SCHEMA_TABLES}
-            WHERE type = 'table' AND name = 'trades'
-        ;`)).length)
-            await this.db.sql(`CREATE TABLE trades(
+        await this.db.sql(`
+        CREATE TABLE IF NOT EXISTS trades(
             market_id   SMALLINT            NOT NULL    REFERENCES markets(id),
             local_time  BIGINT              NOT NULL,
             price       BIGINT              NOT NULL,
             amount      DOUBLE PRECISION    NOT NULL,
             action      CHAR(3)             NOT NULL
         );`);
-        if (!(await this.db.sql(`
-            SELECT * FROM ${SCHEMA_TABLES}
-            WHERE type = 'table' AND name = 'orderbooks'
-        ;`)).length)
-            await this.db.sql(`CREATE TABLE orderbooks(
+        await this.db.sql(`
+        CREATE TABLE IF NOT EXISTS orderbooks(
             market_id   SMALLINT    NOT NULL    REFERENCES markets(id),
             local_time  BIGINT      NOT NULL,
             bid_price   BIGINT      NOT NULL,
