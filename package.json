@@ -9,7 +9,7 @@
         "build": "tsc -b",
         "dev": "env NODE_ENV=development node -r source-map-support/register ./dist/main",
         "start": "pm2 start ./ecosystem.config.js",
-        "json": "node -r source-map-support/register ./dist/db2json.js"
+        "json": "node --max_old_space_size=4096 -r source-map-support/register ./dist/db2json.js"
     },
     "repository": {
         "type": "git",

@@ -7,6 +7,7 @@ const async_sqlite_1 = __importDefault(require("async-sqlite"));
 const process_1 = __importDefault(require("process"));
 const fs_extra_1 = require("fs-extra");
 const path_1 = require("path");
+const markets = fs_extra_1.readJsonSync(`${__dirname}/../cfg/db2json.json`);
 (async () => {
     const db = new async_sqlite_1.default(process_1.default.argv[2]);
     console.log('reading');
@@ -16,11 +17,14 @@ const path_1 = require("path");
     rows = await db.sql(`
         SELECT
             markets.name AS market,
-            orderbooks.local_time,
-            orderbooks.bid_price,
-            orderbooks.ask_price
+            local_time,
+            bid_price,
+            ask_price
         FROM orderbooks JOIN markets
         ON orderbooks.market_id = markets.id
+        WHERE name IN (${markets
+        .map(market => `'${market}'`)
+        .join(',')})
         ORDER BY local_time ASC
     ;`);
     data.orderbooks = rows.map((row) => ({
@@ -32,12 +36,15 @@ const path_1 = require("path");
     rows = await db.sql(`
         SELECT
             markets.name AS market,
-            trades.local_time,
-            trades.price,
-            trades.amount,
-            trades.action
+            local_time,
+            price,
+            amount,
+            action
         FROM trades JOIN markets
         ON trades.market_id = markets.id
+        WHERE name IN (${markets
+        .map(market => `'${market}'`)
+        .join(',')})
         ORDER BY local_time ASC
     ;`);
     data.trades = rows.map((row) => ({

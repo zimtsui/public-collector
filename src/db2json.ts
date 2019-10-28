@@ -2,6 +2,7 @@ import Database from 'async-sqlite';
 import process from 'process';
 import {
     writeJson,
+    readJsonSync,
 } from 'fs-extra';
 import {
     basename,
@@ -28,6 +29,8 @@ interface Market {
     trades: Trade[];
 }
 
+const markets: string[] = readJsonSync(`${__dirname}/../cfg/db2json.json`);
+
 (async () => {
     const db = new Database(process.argv[2]);
 
@@ -40,11 +43,14 @@ interface Market {
     rows = await db.sql(`
         SELECT
             markets.name AS market,
-            orderbooks.local_time,
-            orderbooks.bid_price,
-            orderbooks.ask_price
+            local_time,
+            bid_price,
+            ask_price
         FROM orderbooks JOIN markets
         ON orderbooks.market_id = markets.id
+        WHERE name IN (${markets
+            .map(market => `'${market}'`)
+            .join(',')})
         ORDER BY local_time ASC
     ;`);
     data.orderbooks = rows.map((row): Orderbook => ({
@@ -57,12 +63,15 @@ interface Market {
     rows = await db.sql(`
         SELECT
             markets.name AS market,
-            trades.local_time,
-            trades.price,
-            trades.amount,
-            trades.action
+            local_time,
+            price,
+            amount,
+            action
         FROM trades JOIN markets
         ON trades.market_id = markets.id
+        WHERE name IN (${markets
+            .map(market => `'${market}'`)
+            .join(',')})
         ORDER BY local_time ASC
     ;`);
     data.trades = rows.map((row): Trade => ({
