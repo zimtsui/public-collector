@@ -56,7 +56,7 @@ class PublicCollector extends autonomous_1.Autonomous {
         await this.db.sql(`
         CREATE TABLE IF NOT EXISTS trades(
             market_id   SMALLINT            NOT NULL    REFERENCES markets(id),
-            local_time  BIGINT              NOT NULL,
+            time        BIGINT              NOT NULL,
             price       BIGINT              NOT NULL,
             amount      DOUBLE PRECISION    NOT NULL,
             action      CHAR(3)             NOT NULL
@@ -64,7 +64,7 @@ class PublicCollector extends autonomous_1.Autonomous {
         await this.db.sql(`
         CREATE TABLE IF NOT EXISTS orderbooks(
             market_id   SMALLINT    NOT NULL    REFERENCES markets(id),
-            local_time  BIGINT      NOT NULL,
+            time        BIGINT      NOT NULL,
             bid_price   BIGINT      NOT NULL,
             ask_price   BIGINT      NOT NULL
         );`);
@@ -92,9 +92,9 @@ class PublicCollector extends autonomous_1.Autonomous {
                 for (const trade of trades)
                     this.db.sql(`
                         INSERT INTO trades
-                        (market_id, local_time, price, amount, action)
+                        (market_id, time, price, amount, action)
                         VALUES(%d, %d, %d, %d, '%s')
-                    ;`, this.marketId.get(market), Date.now(), trade.price, trade.amount, trade.action).catch(err => {
+                    ;`, this.marketId.get(market), trade.time, trade.price, trade.amount, trade.action).catch(err => {
                         console.error(err);
                         this.stop();
                     });
@@ -127,9 +127,9 @@ class PublicCollector extends autonomous_1.Autonomous {
                     this.latest[market].minAskPrice = orderbook.asks[0].price;
                     this.db.sql(`
                         INSERT INTO orderbooks
-                        (market_id, local_time, bid_price, ask_price)
+                        (market_id, time, bid_price, ask_price)
                         VALUES(%d, %d, %d, %d)
-                    ;`, this.marketId.get(market), Date.now(), orderbook.bids[0].price, orderbook.asks[0].price).catch(err => {
+                    ;`, this.marketId.get(market), orderbook.time, orderbook.bids[0].price, orderbook.asks[0].price).catch(err => {
                         console.error(err);
                         this.stop();
                     });

@@ -342,11 +342,11 @@
         "signature": "f0007c6764fe8a4ac5c9af849bc85e327880719a2c65e1a0911bee4e50e392c9"
       },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "ed94b23c825623917f4cbc86882aa74fca6d712ff2ac4b4fce59f850db768312",
-        "signature": "ed94b23c825623917f4cbc86882aa74fca6d712ff2ac4b4fce59f850db768312"
+        "version": "ed237b68f440cd10c6fcdfbdde8268eccef5820fb9d8cb19a48a0b2c06d55e48",
+        "signature": "ed237b68f440cd10c6fcdfbdde8268eccef5820fb9d8cb19a48a0b2c06d55e48"
       },
       "./src/index.ts": {
-        "version": "f4751dd1eeff867d596dab9c57b788beb435385d1b687eaefc83325a89e7f5e2",
+        "version": "d6276af85326654147bb84f3eecada9d29876b9109f291c61ea563a8deee55f8",
         "signature": "20801395a160d90939234d2941886552d9f7d77a8703d65ff58b5bebc77f73e3"
       },
       "./node_modules/pandora-kita/dist/index.d.ts": {
@@ -1432,12 +1432,12 @@
       "./node_modules/autonomous/dist/autonomous.d.ts",
       "./node_modules/autonomous/dist/pandora2pm2.d.ts",
       "./node_modules/autonomous/dist/index.d.ts",
-      "./node_modules/interfaces/dist/index.d.ts",
       "./node_modules/pandora-kita/dist/index.d.ts",
       "./src/main.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/sqlite3/index.d.ts",
+      "./node_modules/interfaces/dist/index.d.ts",
       "./src/index.ts"
     ]
   },
